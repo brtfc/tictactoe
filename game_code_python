@@ -1,0 +1,115 @@
+```python
+import string
+
+def print_empty_board(empty_board):
+    board_index = 0
+    for row in range(3):
+        for column in range(3): 
+            board_index += 1
+            empty_board[row][column] = str(board_index)
+            print(empty_board[row][column], end = '')
+            if column != 2:
+                print(' | ', end = '')
+            else:
+                print('\n-- --  ---')
+                
+                
+#only index positions 1-9 are accepted
+def player_index_pos(index_pos, cell_char):
+    while index_pos not in t_board_cell_index.keys():
+        print('Invalid move')
+        index_pos = input('Player "'+cell_char+'" move(1-9):').strip(string.ascii_letters)
+    return (index_pos)
+                
+    
+def print_board(board, cell_index = '', player_choice =''):
+    #insert player choice into a specified cell
+    cell_row = t_board_cell_index[cell_index][0]
+    cell_column = t_board_cell_index[cell_index][1]
+    board[cell_row][cell_column] = player_choice
+
+    for row in range(3):
+        for column in range(3):
+            #populate a cell with a random number if it does not containn 'x' or 'o'
+            print(board[row][column], end = '')
+            if column != 2:
+                print(' | ', end = '')
+            else:
+                print('\n-- --  ---')
+    print()
+    
+
+def detect_winner(board):
+    win = False
+    #check matching rows
+    for row in board:
+        if len(set(row)) == 1:
+            win = True
+            
+    #check matching columns 
+    column_0 = []
+    column_1 = []
+    column_2 = []
+    for row in board:
+        column_0.append(row[0])
+        column_1.append(row[1])
+        column_2.append(row[2])
+    if len(set(column_0)) == 1:
+        win = True
+    elif len(set(column_1)) == 1:
+        win = True
+    elif len(set(column_0)) == 1:
+        win = True
+    
+    #check matching diagonals
+    diagonal_1 = []
+    diagonal_2 = []
+    row_index_count = 0
+    for row in board:
+        diagonal_1.append(row[row_index_count])
+        diagonal_2.append(row[2-row_index_count])
+        row_index_count += 1
+    if len(set(diagonal_1)) == 1:
+        win = True
+    elif len(set(diagonal_2)) == 1:
+        win = True
+    
+    return win
+
+## blank tictactoe board layout
+t_board = [['', '', ''], ['', '', ''], ['', '', ''] ]
+
+#all possible moves of player
+t_board_cell_index = {'1': (0,0), '2': (0,1), '3': (0,2),
+                      '4': (1,0), '5': (1,1), '6': (1,2),
+                      '7': (2,0), '8': (2,1), '9': (2,2),}
+
+#print game board 
+print_empty_board(t_board)
+print()
+
+#keep track of filled indexes
+cell_stack = []
+turns = {0:'x', 1:'o'}
+key = 0
+gameplay_count = 0
+while (gameplay_count < 9) :
+    key = 1-key #toggle between key 0 and 1
+    player_char = turns[key]
+    player_turn = player_index_pos(input('Player \''+player_char+'\' move(1-9): ').strip(string.ascii_letters), player_char)
+    
+    #check for cell index conflicts
+    while player_turn in cell_stack:
+        print('Cell is already occupied!')
+        player_turn = player_index_pos(input('Player \''+player_char+'\' move(1-9): ').strip(string.ascii_letters), player_char)
+    
+    cell_stack.append(player_turn)
+    print_board(t_board, player_turn, player_char)
+    
+    #check for a winner
+    if(detect_winner(t_board)):
+        print('Player', player_char, 'has won the game!\nGame exiting...')
+        break
+    
+    gameplay_count += 1
+```
