@@ -1,2 +1,2 @@
 # tictactoe
-first ticktacktoe game
+first tictactoe game
